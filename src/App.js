@@ -12,8 +12,14 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state={
-      messages:[]
+      messages:[],
+      rooms:[],
+      joinedRooms:[]
     }
+
+    this.sendMessage = this.sendMessage.bind(this);
+    this.getRooms = this.getRooms.bind(this);
+    this.subscribeRoom = this.subscribeRoom.bind(this);
   }
 
   componentDidMount(){
@@ -26,27 +32,56 @@ class App extends Component {
 
     chatManager.connect()
     .then(currentUser=>{
-      currentUser.subscribeToRoom({
-        roomId:'19410020',
-        hooks:{
-          onMessage:message => {
-            this.setState({
-              messages: [...this.state.messages,message]
-            });
-          }
-        },
-        messageLimit:20
-      })
+      this.currentUser = currentUser;
+      
+      this.getRooms();
+    })
+    .catch(error =>console.log("Error connecting....."));
+  }
+
+  sendMessage(text){
+    this.currentUser.sendMessage({
+      text,
+      roomId:'19410020'
     });
+    
+  }
+  subscribeRoom(roomId){
+    this.setState({
+      messages:[]
+    });
+    this.currentUser.subscribeToRoom({
+      roomId:roomId,
+      hooks:{
+        onMessage:message => {
+          this.setState({
+            messages: [...this.state.messages,message]
+          });
+        }
+      },
+      messageLimit:20
+    });
+  }
+  getRooms(){
+    this.currentUser.getJoinableRooms()
+      .then(rooms => {
+        this.setState({
+          rooms:rooms,
+          joinedRooms:this.currentUser.rooms
+        })
+      })
+      .catch(err => {
+        console.log(`Error getting joinable rooms: ${err}`)
+      });
   }
 
   render() {
     return (
       <div>
-        <RoomList />
+        <RoomList rooms={[...this.state.joinedRooms, ...this.state.rooms]} subscribeRoom={this.subscribeRoom}  />
         <MessageList messages = {this.state.messages} />
         <NewRoomForm />
-        <SendMessageForm />
+        <SendMessageForm  sendMessage = {this.sendMessage}/>
       </div>
     );
   }

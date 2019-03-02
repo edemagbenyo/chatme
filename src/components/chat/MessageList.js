@@ -1,35 +1,16 @@
 import React from "react";
+import Message from './Message';
 
 
-const DUMMY_DATA = [
-    {
-        senderid:'edem',
-        message:'sup??'
-    },
-    {
-        senderid:'john',
-        message:'Cool man'
-    },
-    {
-        senderid:'mike',
-        message:'Can we have the cash??'
-    },
-    {
-        senderid:'edem',
-        message:'relax man!!'
-    },
-];
 export default class MessageList extends React.Component{
     render(){
         const messages = this.props.messages;
         return (
         <div className="message-list">
+            <h3>Our chats</h3>
             {
                 messages.map((message,index)=>{
-                    return(<div key={index}>
-                         <div className="message-username">{message.senderId}</div>
-                         <div className="message-username">{message.text}</div>
-                        </div>);
+                    return(<Message key={index} username = {message.senderId} text={message.text} />);
                 })
             }
         </div>

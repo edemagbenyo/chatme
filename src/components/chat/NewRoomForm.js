@@ -4,7 +4,7 @@ export default class NewRoomForm  extends React.Component{
     render(){
         return (
         <div>
-            <p>RoomList is here</p>
+            <p>Create new Room is here</p>
         </div>
         );
     }
