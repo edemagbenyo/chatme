@@ -1,28 +1,56 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import  Chatkit from "@pusher/chatkit-client";
+import {instanceLocator, tokenUrl} from './config';
+import RoomList from './components/chat/RoomList';
+import MessageList from './components/chat/MessageList';
+import NewRoomForm from './components/chat/NewRoomForm';
+import SendMessageForm from './components/chat/SendMessageForm';
 
 class App extends Component {
+
+  constructor(props){
+    super(props);
+    this.state={
+      messages:[]
+    }
+  }
+
+  componentDidMount(){
+    console.log("Hi, we are mounted")
+    const chatManager = new Chatkit.ChatManager({
+      instanceLocator,
+      userId: 'edem',
+      tokenProvider: new Chatkit.TokenProvider({ url: tokenUrl })
+    });
+
+    chatManager.connect()
+    .then(currentUser=>{
+      currentUser.subscribeToRoom({
+        roomId:'19410020',
+        hooks:{
+          onMessage:message => {
+            this.setState({
+              messages: [...this.state.messages,message]
+            });
+          }
+        },
+        messageLimit:20
+      })
+    });
+  }
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
+      <div>
+        <RoomList />
+        <MessageList messages = {this.state.messages} />
+        <NewRoomForm />
+        <SendMessageForm />
       </div>
     );
   }
 }
+
 
 export default App;
