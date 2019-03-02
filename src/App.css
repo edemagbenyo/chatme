@@ -23,11 +23,18 @@
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+ul.rooms{
+  background:#899823;
+  padding: 10;
+}
+ul li{
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+li.active a{
+  text-decoration: none;
+  color:white;
+  font-size: 12;
+  font-weight: 800;
 }

@@ -27,7 +27,7 @@ class App extends Component {
     console.log("Hi, we are mounted")
     const chatManager = new Chatkit.ChatManager({
       instanceLocator,
-      userId: 'edem',
+      userId: 'john',
       tokenProvider: new Chatkit.TokenProvider({ url: tokenUrl })
     });
 
@@ -67,6 +67,7 @@ class App extends Component {
       });
       this.getRooms();
     })
+    .catch(err=>console.log("Could not join room"))
   }
   getRooms(){
     this.currentUser.getJoinableRooms()
@@ -84,7 +85,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <RoomList rooms={[...this.state.joinedRooms, ...this.state.rooms]} subscribeRoom={this.subscribeRoom}  />
+        <RoomList roomId={this.state.roomId} rooms={[...this.state.joinedRooms, ...this.state.rooms]} subscribeRoom={this.subscribeRoom}  />
         <MessageList messages = {this.state.messages} />
         <NewRoomForm />
         <SendMessageForm  sendMessage = {this.sendMessage}/>
