@@ -14,7 +14,8 @@ class App extends Component {
     this.state={
       messages:[],
       rooms:[],
-      joinedRooms:[]
+      joinedRooms:[],
+      roomId:null
     }
 
     this.sendMessage = this.sendMessage.bind(this);
@@ -42,7 +43,7 @@ class App extends Component {
   sendMessage(text){
     this.currentUser.sendMessage({
       text,
-      roomId:'19410020'
+      roomId:this.state.roomId
     });
     
   }
@@ -60,7 +61,12 @@ class App extends Component {
         }
       },
       messageLimit:20
-    });
+    }).then(room=>{
+      this.setState({
+        roomId:room.id
+      });
+      this.getRooms();
+    })
   }
   getRooms(){
     this.currentUser.getJoinableRooms()
